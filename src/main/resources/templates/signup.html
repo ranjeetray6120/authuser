@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Signup</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-6xl bg-white shadow-xl rounded-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
+
+    <!-- Left Panel -->
+    <div class="flex flex-col items-center justify-center bg-gray-50 p-6 sm:p-10">
+      <img src="https://cdn-icons-png.flaticon.com/512/706/706797.png" alt="Welcome" class="w-28 sm:w-36 mb-4" />
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 text-center">Hi, Welcome Back</h2>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="p-6 sm:p-10">
+      <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">Sign up</h3>
+      <p class="text-sm mb-4">Have an account? <a href="/auth/login" class="text-blue-600 hover:underline">Login</a></p>
+
+      <!-- ✅ Error message display block -->
+      <div th:if="${error}" class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+        <span th:text="${error}"></span>
+      </div>
+
+      <form th:action="@{/auth/signup}" method="post" th:object="${signupRequest}" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input type="text" th:field="*{fullName}" placeholder="Full Name" class="border border-gray-300 rounded-md px-4 py-2 w-full" required>
+          <input type="text" th:field="*{companyName}" placeholder="Company Name" class="border border-gray-300 rounded-md px-4 py-2 w-full" required>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input type="email" th:field="*{email}" placeholder="Email address" class="border border-gray-300 rounded-md px-4 py-2 w-full" required>
+          <input type="text" th:field="*{roleTitle}" placeholder="Role/Title" class="border border-gray-300 rounded-md px-4 py-2 w-full" required>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input type="text" th:field="*{department}" placeholder="Department" class="border border-gray-300 rounded-md px-4 py-2 w-full" required>
+
+          <div class="relative w-full">
+            <input type="password" id="password" th:field="*{password}" placeholder="Password" class="border border-gray-300 rounded-md px-4 py-2 w-full pr-10" required>
+            <button type="button" onclick="togglePassword()" class="absolute right-3 top-2.5 text-gray-500">👁️</button>
+          </div>
+        </div>
+
+        <input type="password" th:field="*{confirmPassword}" placeholder="Confirm Password" class="border border-gray-300 rounded-md px-4 py-2 w-full" required>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md py-2">Signup</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const password = document.getElementById('password');
+      password.type = password.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+</body>
+</html>

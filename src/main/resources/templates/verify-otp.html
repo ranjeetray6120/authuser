@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Verify OTP</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="w-full max-w-5xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    
+    <!-- Left Panel -->
+    <div class="flex flex-col items-center justify-center bg-gray-50 p-6 sm:p-10">
+      <img src="https://cdn-icons-png.flaticon.com/512/3898/3898892.png" alt="OTP" class="w-28 sm:w-36 mb-4" />
+      <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 text-center">OTP Verification</h2>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="p-6 sm:p-10 text-center">
+      <h3 class="text-xl font-bold mb-2">Please enter the OTP</h3>
+      <p class="text-sm text-gray-500 mb-4">The one-time password was sent to your email</p>
+
+      <!-- Message Display -->
+      <div th:if="${message}" class="mb-4">
+        <div th:if="${message == 'User verified and saved successfully'}"
+             class="bg-green-100 text-green-700 px-4 py-2 rounded text-sm">
+          ✅ <span th:text="${message}"></span>
+        </div>
+        <div th:if="${message != 'User verified and saved successfully'}"
+             class="bg-red-100 text-red-700 px-4 py-2 rounded text-sm">
+          ❌ <span th:text="${message}"></span>
+        </div>
+      </div>
+
+      <!-- Form -->
+	  <form th:action="@{/auth/verify-otp}"
+	        method="post"
+	        th:object="${otpRequest}"
+	        class="space-y-4"
+	        onsubmit="return updateOtpValue();">
+
+	    <!-- ✅ Correct hidden email field -->
+	    <input type="hidden" th:field="*{email}" />
+
+	    
+
+        <!-- OTP Inputs -->
+        <div class="flex justify-center gap-2 sm:gap-3 mb-3">
+          <input type="text" maxlength="1" class="otp-input w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input type="text" maxlength="1" class="otp-input w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input type="text" maxlength="1" class="otp-input w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input type="text" maxlength="1" class="otp-input w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input type="text" maxlength="1" class="otp-input w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input type="text" maxlength="1" class="otp-input w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded text-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+        </div>
+
+        <!-- Hidden Combined OTP -->
+        <input type="hidden" th:field="*{otp}" id="otpValue" name="otp" />
+
+        <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md">
+          Continue
+        </button>
+
+        
+      </form>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const inputs = document.querySelectorAll('.otp-input');
+    const hiddenOtp = document.getElementById('otpValue');
+
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+        updateOtpValue();
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value === '' && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    function updateOtpValue() {
+      let otp = '';
+      inputs.forEach(input => otp += input.value);
+      hiddenOtp.value = otp;
+      console.log("🔐 Final OTP:", otp);
+
+      // Don't submit if OTP is incomplete
+      return otp.length === 6;
+    }
+  </script>
+</body>
+</html>
